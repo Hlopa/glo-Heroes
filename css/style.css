@@ -16,6 +16,8 @@
     width: 100%;
     padding: 0 10px;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .hero-img{
@@ -32,6 +34,10 @@
 .hero-info{
     background-color: #f0e6d3;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
 }
 
 .hero-info__title{
@@ -44,6 +50,17 @@
 .hero-info__title span {
    color: #000;
    font-weight: 300;
+}
+
+.row{
+    display: flex;
+    line-height: 20px;
+    margin-bottom: 8px;
+
+}
+
+.hero-info__title{
+    flex: 0 0 25%;
 }
 
 
