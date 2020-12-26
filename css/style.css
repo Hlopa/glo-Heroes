@@ -1,0 +1,51 @@
+.container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+.cards-box__inner{
+    margin: 0 -10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+.cards-item{
+    max-width: 31%;
+    width: 100%;
+    padding: 0 10px;
+    margin-bottom: 20px;
+}
+
+.hero-img{
+  height: 400px; 
+}
+
+.hero-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  
+    object-position: top;
+  }
+
+.hero-info{
+    background-color: #f0e6d3;
+    padding: 10px;
+}
+
+.hero-info__title{
+    line-height: 20px;
+    color: saddlebrown;
+    font-weight: 600;
+}
+
+
+.hero-info__title span {
+   color: #000;
+   font-weight: 300;
+}
+
+
+
+
