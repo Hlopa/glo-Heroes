@@ -64,5 +64,24 @@
 }
 
 
+.search-box{
+    position: relative;
+    min-height: 200px;
+}
+
+
+.search-box__inner{
+    position: absolute;
+    top: 60%;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+.search-box select,
+.search-box button {
+    background-color: rgb(240, 180, 111);
+    border: none;
+    padding: 5px 10px;
+}
 
 

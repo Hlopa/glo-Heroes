@@ -7,22 +7,48 @@ const init = () => {
 }
 
 const getCorrectName = (string) => {
-   let newStr = '';
-   for(let i = 0; i<string.length; i++){
-    if(i === 0){
-        newStr+= string[0].toUpperCase();
-    } else if  
+    let newStr = '';
+    for (let i = 0; i < string.length; i++) {
+        if (i === 0) {
+            newStr += string[0].toUpperCase();
+        } else if
 
-    (string[i].toUpperCase()== string[i]){
-        newStr+=` ${string[i]}`
-    } else {
-        newStr+=string[i]
+            (string[i].toUpperCase() == string[i]) {
+            newStr += ` ${string[i]}`
+        } else {
+            newStr += string[i]
+        }
     }
-   } 
+    return newStr;
+};
 
-  return newStr;
+
+function createItems(hero, display) {
+    const cartItem = document.createElement('div');
+    cartItem.classList.add('cards-item');
+    cartItem.classList.add('hero');
+    cartItem.style.display = display;
+    cartItem.insertAdjacentHTML('afterbegin', `
+        <div class="hero-img">
+            <img src="${hero.photo}" alt="">
+        </div>
+        `);
+    const cartInfo = document.createElement('div');
+    cartInfo.classList.add('hero-info');
+
+    for (let info in hero) {
+        if (info !== 'photo') {
+            cartInfo.insertAdjacentHTML('beforeend', `
+           <div class='row'>   
+           <div class="hero-info__title row-${info}">${getCorrectName(info)}</div>
+           <div class='hero-info_text ${info}'>${hero[info]}</div>
+           </div>    
+        `);
+        }
+    };
+    cartItem.append(cartInfo);
+    cardsBoxInner.append(cartItem);
 }
-
 
 //Получаю данные из json файла
 
@@ -32,33 +58,63 @@ const getData = () => {
     firstReq.addEventListener('load', function () {
         console.log('It work!');
         const data = JSON.parse(this.responseText);
-        for (let heroes of data) {
-            const cartItem = document.createElement('div');
-            cartItem.classList.add('cards-item');
-            cartItem.classList.add('hero');
-            cartItem.insertAdjacentHTML('afterbegin', `
-                <div class="hero-img">
-                    <img src="${heroes.photo}" alt="">
-                </div>
-                `);
-            const cartInfo = document.createElement('div');
-            cartInfo.classList.add('hero-info');
 
-            for(let info in heroes){
-                if(info !== 'photo'){
-                   cartInfo.insertAdjacentHTML('beforeend', `
-                   <div class='row'>   
-                   <div class="hero-info__title row-${info}">${getCorrectName(info)}</div>
-                   <div class='hero-info_text ${info}'>${heroes[info]}</div>
-                   </div>    
-                `);  
+        for (let heroes of data) {
+            createItems(heroes, "flex")
+        };
+
+        const select = document.querySelector('select');
+        select.addEventListener('input', () => {
+            cardsBoxInner.innerHTML = '';
+            for (let heroes of data) {
+                if (heroes.movies) {
+                    let res = heroes.movies.find(item => item === select.value);
+                    if (res) {
+                        createItems(heroes, "flex")
+                    } else {
+                        createItems(heroes, "none")
+                    }
+                }
+            }
+        })
+
+        const showAll = document.querySelector('.search-all');
+        showAll.addEventListener('click', () => {
+            cardsBoxInner.innerHTML = '';
+            for (let heroes of data) {
+                createItems(heroes, "flex")
+            };
+        })
+
+
+        const generateSelect = () => {
+            let arrFilms = [];
+            for (let heroes of data) {
+                if (heroes.movies) {
+                    heroes.movies.forEach(movie => {
+                        if (arrFilms.length === 0) {
+                            arrFilms.push(movie)
+                        } else if (arrFilms.indexOf(movie) === -1) {
+                            arrFilms.push(movie)
+                        }
+                    })
                 }
             };
+            return arrFilms.sort()
 
-            cartItem.append(cartInfo);
-            cardsBoxInner.append(cartItem);
-            
-        }
+        };
+
+        generateSelect();
+
+        let arr = generateSelect();
+
+        arr.forEach(film => {
+            let option = document.createElement('option');
+            option.value = film;
+            option.textContent = film;
+            select.append(option)
+        })
+
 
     });
 
@@ -66,11 +122,13 @@ const getData = () => {
     firstReq.open('GET', '../dbHeroes.json');
     firstReq.send();
     console.log('Request send!!');
-
 };
 
-
-//Отрисосываю все карточки
-
-
 init();
+
+
+cardsBoxInner.addEventListener('click', (e) => {
+    console.log(e.target)
+})
+
+
