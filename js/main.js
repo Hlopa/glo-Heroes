@@ -39,11 +39,18 @@ function createItems(hero, display) {
     cartInfo.classList.add('hero-info');
 
     for (let info in hero) {
-        if (info !== 'photo') {
+        if (info !== 'photo' && info !== 'movies') {
             cartInfo.insertAdjacentHTML('beforeend', `
            <div class='row'>   
            <div class="hero-info__title row-${info}">${getCorrectName(info)}</div>
            <div class='hero-info_text ${info}'>${hero[info]}</div>
+           </div>    
+        `);
+        } else if (info === 'movies') {
+            cartInfo.insertAdjacentHTML('beforeend', `
+           <div class='row'>   
+           <div class="hero-info__title row-${info}">${getCorrectName(info)}</div>
+           <div class='hero-info_text ${info}'>${hero[info].join(`, <br>`)}</div>
            </div>    
         `);
         }
@@ -102,7 +109,7 @@ function generateSelect(data) {
 
 
 
-function getData(){
+function getData() {
     const firstReq = new XMLHttpRequest();
 
     firstReq.addEventListener('load', function () {
