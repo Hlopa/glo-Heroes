@@ -1,18 +1,20 @@
 'use strict';
 
 const cardsBoxInner = document.querySelector('.cards-box__inner');
+const select = document.querySelector('select');
+const showAll = document.querySelector('.search-all');
+
 
 const init = () => {
     getData();
 }
 
-const getCorrectName = (string) => {
+function getCorrectName(string) {
     let newStr = '';
     for (let i = 0; i < string.length; i++) {
         if (i === 0) {
             newStr += string[0].toUpperCase();
         } else if
-
             (string[i].toUpperCase() == string[i]) {
             newStr += ` ${string[i]}`
         } else {
@@ -48,87 +50,78 @@ function createItems(hero, display) {
     };
     cartItem.append(cartInfo);
     cardsBoxInner.append(cartItem);
-}
+};
 
-//Получаю данные из json файла
+function createSelectItems(data) {
+    select.addEventListener('input', () => {
+        cardsBoxInner.innerHTML = '';
+        for (let heroes of data) {
+            if (heroes.movies) {
+                let res = heroes.movies.find(item => item === select.value);
+                if (res) {
+                    createItems(heroes, "flex")
+                } else {
+                    createItems(heroes, "none")
+                }
+            }
+        };
+    });
+};
 
-const getData = () => {
+function showAllItems(data) {
+    showAll.addEventListener('click', () => {
+        cardsBoxInner.innerHTML = '';
+        for (let heroes of data) {
+            createItems(heroes, "flex")
+        };
+    })
+};
+
+
+function generateSelect(data) {
+    let arrFilms = [];
+    for (let heroes of data) {
+        if (heroes.movies) {
+            heroes.movies.forEach(movie => {
+                if (arrFilms.length === 0) {
+                    arrFilms.push(movie)
+                } else if (arrFilms.indexOf(movie) === -1) {
+                    arrFilms.push(movie)
+                }
+            });
+        };
+    };
+
+    arrFilms.sort().forEach(film => {
+        let option = document.createElement('option');
+        option.value = film;
+        option.textContent = film;
+        select.append(option)
+    })
+};
+
+
+
+function getData(){
     const firstReq = new XMLHttpRequest();
 
     firstReq.addEventListener('load', function () {
-        console.log('It work!');
+
         const data = JSON.parse(this.responseText);
 
         for (let heroes of data) {
             createItems(heroes, "flex")
         };
 
-        const select = document.querySelector('select');
-        select.addEventListener('input', () => {
-            cardsBoxInner.innerHTML = '';
-            for (let heroes of data) {
-                if (heroes.movies) {
-                    let res = heroes.movies.find(item => item === select.value);
-                    if (res) {
-                        createItems(heroes, "flex")
-                    } else {
-                        createItems(heroes, "none")
-                    }
-                }
-            }
-        })
-
-        const showAll = document.querySelector('.search-all');
-        showAll.addEventListener('click', () => {
-            cardsBoxInner.innerHTML = '';
-            for (let heroes of data) {
-                createItems(heroes, "flex")
-            };
-        })
-
-
-        const generateSelect = () => {
-            let arrFilms = [];
-            for (let heroes of data) {
-                if (heroes.movies) {
-                    heroes.movies.forEach(movie => {
-                        if (arrFilms.length === 0) {
-                            arrFilms.push(movie)
-                        } else if (arrFilms.indexOf(movie) === -1) {
-                            arrFilms.push(movie)
-                        }
-                    })
-                }
-            };
-            return arrFilms.sort()
-
-        };
-
-        generateSelect();
-
-        let arr = generateSelect();
-
-        arr.forEach(film => {
-            let option = document.createElement('option');
-            option.value = film;
-            option.textContent = film;
-            select.append(option)
-        })
-
-
+        createSelectItems(data);
+        showAllItems(data);
+        generateSelect(data);
     });
 
     firstReq.addEventListener('error', () => console.log('error'));
     firstReq.open('GET', '../dbHeroes.json');
     firstReq.send();
-    console.log('Request send!!');
 };
 
+
 init();
-
-
-cardsBoxInner.addEventListener('click', (e) => {
-    console.log(e.target)
-})
-
-
